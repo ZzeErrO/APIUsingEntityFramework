@@ -15,8 +15,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RepositoryLayer.Interfaces;
 using RepositoryLayer.Models;
-using RepositoryLayer.Models.DataManager;
-using RepositoryLayer.Models.Repository;
 using RepositoryLayer.Services;
 
 namespace FundooApp
@@ -36,7 +34,7 @@ namespace FundooApp
             services.AddTransient<IUserBL, UserBL>();
             services.AddTransient<IUserRL, UserRL>();
             services.AddDbContext<UserContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:UserDB"]));
-            services.AddScoped<IDataRepository<User>, UserManager>();
+            //services.AddScoped<IDataRepository<User>, UserManager>();
             services.AddControllers();
         }
 

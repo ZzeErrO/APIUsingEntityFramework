@@ -6,7 +6,6 @@ using BusinessManager.Interfaces;
 using CommonLayer;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.Models;
-using RepositoryLayer.Models.Repository;
 
 namespace FundooApp.Controllers
 {
@@ -15,8 +14,8 @@ namespace FundooApp.Controllers
     public class UserController : ControllerBase
     {
         //IUserBL userBL;
-        private readonly IDataRepository<User> _dataRepository;
-        public UserController(/*IUserBL userBL, */IDataRepository<User> dataRepository)
+        private readonly IUserBL _dataRepository;
+        public UserController(/*IUserBL userBL, */IUserBL dataRepository)
         {
             //this.userBL = userBL;
             _dataRepository = dataRepository;
@@ -30,7 +29,7 @@ namespace FundooApp.Controllers
         }*/
 
         // GET: api/Employee
-        [HttpGet]
+       /* [HttpGet]
         public IActionResult Get()
         {
             IEnumerable<User> users = _dataRepository.GetAll();
@@ -50,23 +49,26 @@ namespace FundooApp.Controllers
 
             return Ok(user);
         }
-
+       */
         // POST: api/Employee
         [HttpPost]
-        public IActionResult Post([FromBody] User user)
+        public IActionResult UserRegister([FromBody] User user)
         {
             if (user == null)
             {
                 return BadRequest("Employee is null.");
             }
 
-            _dataRepository.Add(user);
-            return CreatedAtRoute(
-                  "Get",
-                  new { Id = user.UserId },
-                  user);
+           bool result = _dataRepository.UserRegister(user);
+            if (result == true)
+            {
+                return this.Ok(new { success = true, message = "User Registration is successful" });
+            }
+            else {
+                return this.BadRequest(new { success = false, message ="User Registration failed"});
+            }
         }
-
+        /*
         // PUT: api/Employee/5
         [HttpPut("{id}")]
         public IActionResult Put(long id, [FromBody] User user)
@@ -99,6 +101,6 @@ namespace FundooApp.Controllers
             _dataRepository.Delete(user);
             return NoContent();
         }
-
+        */
     }
 }
