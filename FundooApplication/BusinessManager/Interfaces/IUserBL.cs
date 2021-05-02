@@ -6,13 +6,12 @@ using RepositoryLayer.Models;
 
 namespace BusinessManager.Interfaces
 {
-    public interface IUserBL/*<TEntity>*/
+    public interface IUserBL
     {
-       /* IEnumerable<TEntity> GetAll();
-        TEntity Get(long id);
-        void Add(TEntity entity);
-        void Update(TEntity dbEntity, TEntity entity);*/
         bool UserRegister(User user);
-       // void Delete(TEntity entity);
+        public IEnumerable<User> GetAll();
+        public User Get(long id);
+        public bool Update(User user, User entity);
+        public void Delete(User user);
     }
 }

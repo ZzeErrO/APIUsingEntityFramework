@@ -6,13 +6,12 @@ using RepositoryLayer.Models;
 
 namespace RepositoryLayer.Interfaces
 {
-    public interface IUserRL/*<TEntity>*/
+    public interface IUserRL
     {
-        /*IEnumerable<TEntity> GetAll();
-        TEntity Get(long id);
-        void Add(TEntity entity);
-        void Update(TEntity dbEntity, TEntity entity);
-        void Delete(TEntity entity);*/
         bool UserRegister(User user);
+        public IEnumerable<User> GetAll();
+        public User Get(long id);
+        public bool Update(User user, User entity);
+        public void Delete(User user);
     }
 }

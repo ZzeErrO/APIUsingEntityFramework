@@ -15,33 +15,16 @@ namespace RepositoryLayer.Services
         {
             _userContext = context;
         }
+
         public IEnumerable<User> GetAll()
         {
             return _userContext.Users.ToList();
         }
+
         public User Get(long id)
         {
             return _userContext.Users
                   .FirstOrDefault(e => e.UserId == id);
-        }
-        public void Add(User entity)
-        {
-            _userContext.Users.Add(entity);
-            _userContext.SaveChanges();
-        }
-        public void Update(User user, User entity)
-        {
-            user.FirstName = entity.FirstName;
-            user.LastName = entity.LastName;
-            user.Email = entity.Email;
-            user.Gender = entity.Gender;
-            user.Password = entity.Password;
-            _userContext.SaveChanges();
-        }
-        public void Delete(User user)
-        {
-            _userContext.Users.Remove(user);
-            _userContext.SaveChanges();
         }
 
         public bool UserRegister(User user)
@@ -57,5 +40,30 @@ namespace RepositoryLayer.Services
                 return true;
             }
         }
+
+        public bool Update(User user, User entity)
+        {
+            user.FirstName = entity.FirstName;
+            user.LastName = entity.LastName;
+            user.Email = entity.Email;
+            user.Gender = entity.Gender;
+            user.Password = entity.Password;
+            int result = _userContext.SaveChanges();
+            if (result <= 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public void Delete(User user)
+        {
+            _userContext.Users.Remove(user);
+            _userContext.SaveChanges();
+        }
+
     }
 }

@@ -15,43 +15,30 @@ namespace BusinessManager.Services
         {
             this.userRL = userRL;
         }
-        /*
-                public void Add(User entity)
-                {
-                    throw new NotImplementedException();
-                }
-
-                public void Delete(User entity)
-                {
-                    throw new NotImplementedException();
-                    //return this.userRL.Delete(entity);
-                }
-
-                public User Get(long id)
-                {
-                    //throw new NotImplementedException();
-                    return this.userRL.Get(id);
-                }
-
-                public IEnumerable<User> GetAll()
-                {
-                    //throw new NotImplementedException();
-                    return this.userRL.GetAll();
-                }
-
-                /*public Model SampleApi(Model model)
-                {
-                    return this.userRL.SampleApi(model);
-                }*/
-        /*
-                public void Update(User dbEntity, User entity)
-                {
-                    throw new NotImplementedException();
-                }*/
 
         public bool UserRegister(User user)
         {
             return this.userRL.UserRegister(user);
+        }
+
+        public IEnumerable<User> GetAll()
+        {
+            return this.userRL.GetAll();
+        }
+
+        public User Get(long id)
+        {
+            return this.userRL.Get(id);
+        }
+
+        public bool Update(User user, User entity)
+        {
+            return this.userRL.Update(user, entity);
+        }
+
+        public void Delete(User user)
+        {
+            this.userRL.Delete(user);        
         }
     }
 }
