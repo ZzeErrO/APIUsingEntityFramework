@@ -15,7 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FundooApp.Controllers
 {
-    public class AuthenticateController : ControllerBase
+    public class AuthenticateController : BaseController
     {
         #region Property  
         /// <summary>  
@@ -129,4 +129,13 @@ namespace FundooApp.Controllers
         public string Password { get; set; }
     }
     #endregion
+
+    [Produces("application/json")]
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+    public class BaseController : ControllerBase
+    {
+
+    }
 }

@@ -1,28 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using BusinessManager.Interfaces;
 using CommonLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RepositoryLayer.Models;
 
 namespace FundooApp.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly IUserBL _userBL;
-        public UserController(IUserBL dataRepository)
+        private readonly string _secret;
+        private readonly string _issuer;
+        public UserController(IUserBL dataRepository, IConfiguration config)
         {
             _userBL = dataRepository;
-           // Task task = new Task(RegisterAsync);
+            _secret = config.GetSection("Jwt").GetSection("Key").Value;
+            _issuer = config.GetSection("Jwt").GetSection("Issuer").Value;
         }
 
         // GET: api/Employee
+        /// <summary>    
+        /// ValuesController Api Get method    
+        /// </summary>    
+        /// <returns></returns>  
         [HttpGet]
         public IActionResult Get()
         {
@@ -30,22 +42,9 @@ namespace FundooApp.Controllers
             return Ok(users);
         }
 
-        // GET: api/Employee/5
-        [HttpGet("{id}", Name = "Get")]
-        public IActionResult Get(long id)
-        {
-            User user = _userBL.Get(id);
-
-            if (user == null)
-            {
-                return NotFound("The Employee record couldn't be found.");
-            }
-
-            return Ok(user);
-        }
-
         // POST: api/User
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult UserRegister([FromBody] User user)
         {
             if (user == null)
@@ -62,112 +61,47 @@ namespace FundooApp.Controllers
             {
                 return this.BadRequest(new { success = false, message ="User Registration failed"});
             }
+
         }
 
-        // PUT: api/Employee/5
-        [HttpPut("{id}")]
-        public IActionResult Put(long id, [FromBody] User user)
-        {
-            if (user == null)
-            {
-                return BadRequest("User is null.");
-            }
-
-            User userToUpdate = _userBL.Get(id);
-            if (userToUpdate == null)
-            {
-                return NotFound("The User record couldn't be found.");
-            }
-
-            bool result = _userBL.Update(userToUpdate, user);
-            if (result == true)
-            {
-                return this.Ok(new { success = true, message = "Successfully edited" });
-            }
-            else
-            {
-                return this.BadRequest(new { success = false, message = "Editing Failed" });
-            }
-           
-        }
-
-        // DELETE: api/Employee/5
-        [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
-        {
-            User user = _userBL.Get(id);
-            if (user == null)
-            {
-                return NotFound("The User record couldn't be found.");
-            }
-
-            _userBL.Delete(user);
-            return NoContent();
-        }
-
-        /*
-        [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<IActionResult> RegisterAsync(User user)
+        [HttpPost("authenticate")]
+        public IActionResult Authenticate([FromBody] LoginRequestModel model)
         {
-            try
+            var user = _userBL.Authenticate(model.Email, model.Password);
+
+            if (user == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                if (user != null)
+                Issuer = _issuer,
+                Audience  = _issuer,
+                Subject = new ClaimsIdentity(new Claim[]
                 {
-                    decimal id = await _userBL.RegisterAsync(user);
-                    if (id != 0)
-                    {
-                        return Ok(new { success = true, message = "User is Registered Successfully" });
-                    }
-                    else
-                    {
-                        return Ok(new { success = false, message = "User is not Registered" });
-                    }
-                }
-                else
-                {
-                    return BadRequest(new { success = false, message = "Insufficient details..." });
-                }
-            }
-            catch (Exception ex)
+                    new Claim(ClaimTypes.Email, model.Email),
+                   // new Claim("Id", model.Id)
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(1440),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            // return basic user info and authentication token
+            return Ok(new
             {
-                return BadRequest(new { success = false, message = ex.Message });
-            }
-            finally 
-            { 
-            
-            }
+                Id = user.UserId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                //Gender = user.Gender,
+                Email = user.Email,
+                Token = tokenString
+            });
         }
 
-        [Route("UserLogin")]
-        [HttpPost]
-        [AllowAnonymous]
-        public IActionResult Login(LoginRequestModel model)
-        {
-            try
-            {
-                if (model != null)
-                {
-                    AccountLoginResponce Data = _userBL.Login(model);
-                    if (Data.Token != null)
-                    {
-                        return Ok(new { success = true, message = "Login successful!", Data });
-                    }
-                    else
-                    {
-                        return BadRequest(new { success = false, message = "Wrong Email or Password" });
-                    }
-                }
-                else
-                {
-                    return BadRequest(new { success =false, message = "Invalid credentials" });
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { success = false, message = ex.Message});
-            }
-        }*/
 
     }
 }

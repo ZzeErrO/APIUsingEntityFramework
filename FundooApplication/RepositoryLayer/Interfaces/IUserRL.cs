@@ -13,5 +13,6 @@ namespace RepositoryLayer.Interfaces
         public User Get(long id);
         public bool Update(User user, User entity);
         public void Delete(User user);
+        public User Authenticate(string email, string password);
     }
 }

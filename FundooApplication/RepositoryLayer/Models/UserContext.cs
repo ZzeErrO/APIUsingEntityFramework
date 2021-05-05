@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CommonLayer.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace RepositoryLayer.Models
@@ -14,7 +15,7 @@ namespace RepositoryLayer.Models
         }
 
         public DbSet<User> Users { get; set; }
-
+        public DbSet<Note> Notes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasData(new User
@@ -22,7 +23,7 @@ namespace RepositoryLayer.Models
                 UserId = 1,
                 FirstName = "Uncle",
                 LastName = "Bob",
-                Gender = 'M',
+                //Gender = 'M',
                 Email = "uncle.bob@gmail.com",
                 Password = "abrakadabra"
 
@@ -31,9 +32,10 @@ namespace RepositoryLayer.Models
                 UserId = 2,
                 FirstName = "Jan",
                 LastName = "Kirsten",
-                Gender = 'F',
+                //Gender = 'F',
                 Email = "jan.kirsten@gmail.com",
-                Password = "++LoveisLife++"
+                Password = "++LoveisLife++",
+
             });
         }
     }

@@ -40,5 +40,10 @@ namespace BusinessManager.Services
         {
             this.userRL.Delete(user);        
         }
+
+        public User Authenticate(string email, string password)
+        {
+            return userRL.Authenticate(email,password);
+        }
     }
 }
