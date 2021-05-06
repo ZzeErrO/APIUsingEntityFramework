@@ -20,8 +20,9 @@ namespace CommonLayer.Models
         public bool IsPin { get; set; }
         public bool IsArchive { get; set; }
         public bool IsTrash { get; set; }
-        [ForeignKey("User")]
+        //foreign key for Users Table
         public long UserId { get; set; }
+        public UserModel User { get; set; }
 
     }
 }

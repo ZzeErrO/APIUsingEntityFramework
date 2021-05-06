@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace RepositoryLayer.Models
+namespace CommonLayer.Models
 {
     public class LoginRequestModel
     {

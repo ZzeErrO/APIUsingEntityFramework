@@ -7,11 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using BusinessManager.Interfaces;
 using CommonLayer;
+using CommonLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using RepositoryLayer.Models;
+
 
 namespace FundooApp.Controllers
 {
@@ -38,14 +39,14 @@ namespace FundooApp.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            IEnumerable<User> users = _userBL.GetAll();
+            IEnumerable<UserModel> users = _userBL.GetAll();
             return Ok(users);
         }
 
         // POST: api/User
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult UserRegister([FromBody] User user)
+        public IActionResult UserRegister([FromBody] UserModel user)
         {
             if (user == null)
             {
@@ -65,7 +66,7 @@ namespace FundooApp.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("authenticate")]
+        [HttpPost("Login")]
         public IActionResult Authenticate([FromBody] LoginRequestModel model)
         {
             var user = _userBL.Authenticate(model.Email, model.Password);
@@ -78,11 +79,11 @@ namespace FundooApp.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Issuer = _issuer,
-                Audience  = _issuer,
+                Audience = _issuer,
                 Subject = new ClaimsIdentity(new Claim[]
                 {
+                    new Claim("Id", Convert.ToString(user.UserId)),
                     new Claim(ClaimTypes.Email, model.Email),
-                   // new Claim("Id", model.Id)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(1440),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

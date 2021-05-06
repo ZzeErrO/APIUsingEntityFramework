@@ -4,50 +4,6 @@
         <name>FundooApp</name>
     </assembly>
     <members>
-        <member name="F:FundooApp.Controllers.AuthenticateController._config">
-            <summary>  
-            Property Declaration  
-            </summary>  
-            <param name="data"></param>  
-            <returns></returns>  
-        </member>
-        <member name="M:FundooApp.Controllers.AuthenticateController.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
-            <summary>  
-            Constructor Injection to access all methods or simply DI(Dependency Injection)  
-            </summary>  
-        </member>
-        <member name="M:FundooApp.Controllers.AuthenticateController.GenerateJSONWebToken(FundooApp.Controllers.LoginModel)">
-            <summary>  
-            Generate Json Web Token Method  
-            </summary>  
-            <param name="userInfo"></param>  
-            <returns></returns>  
-        </member>
-        <member name="M:FundooApp.Controllers.AuthenticateController.AuthenticateUser(FundooApp.Controllers.LoginModel)">
-            <summary>  
-            Hardcoded the User authentication  
-            </summary>  
-            <param name="login"></param>  
-            <returns></returns>  
-        </member>
-        <member name="M:FundooApp.Controllers.AuthenticateController.Login(FundooApp.Controllers.LoginModel)">
-            <summary>  
-            Login Authenticaton using JWT Token Authentication  
-            </summary>  
-            <param name="data"></param>  
-            <returns></returns>  
-        </member>
-        <member name="M:FundooApp.Controllers.AuthenticateController.Get">
-            <summary>  
-            Authorize the Method  
-            </summary>  
-            <returns></returns>  
-        </member>
-        <member name="T:FundooApp.Controllers.LoginModel">
-            <summary>  
-            Json Properties  
-            </summary>  
-        </member>
         <member name="M:FundooApp.Controllers.UserController.Get">
             <summary>    
             ValuesController Api Get method    

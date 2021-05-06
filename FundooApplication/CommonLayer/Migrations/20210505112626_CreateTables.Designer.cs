@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace RepositoryLayer.Migrations
+namespace CommonLayer.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20210505054303_CreateNoteTableMigration")]
-    partial class CreateNoteTableMigration
+    [Migration("20210505112626_CreateTables")]
+    partial class CreateTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -60,10 +60,12 @@ namespace RepositoryLayer.Migrations
 
                     b.HasKey("NoteId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Notes");
                 });
 
-            modelBuilder.Entity("RepositoryLayer.Models.User", b =>
+            modelBuilder.Entity("CommonLayer.Models.User", b =>
                 {
                     b.Property<long>("UserId")
                         .ValueGeneratedOnAdd()
@@ -105,6 +107,22 @@ namespace RepositoryLayer.Migrations
                             LastName = "Kirsten",
                             Password = "++LoveisLife++"
                         });
+                });
+
+            modelBuilder.Entity("CommonLayer.Models.Note", b =>
+                {
+                    b.HasOne("CommonLayer.Models.User", "User")
+                        .WithMany("Notes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CommonLayer.Models.User", b =>
+                {
+                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }

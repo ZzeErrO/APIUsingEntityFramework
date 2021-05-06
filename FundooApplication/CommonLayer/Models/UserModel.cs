@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace RepositoryLayer.Models
+namespace CommonLayer.Models
 {
-    public class User
+    public class UserModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -22,6 +21,7 @@ namespace RepositoryLayer.Models
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public ICollection<Note> Notes { get; set; }
 
     }
 }

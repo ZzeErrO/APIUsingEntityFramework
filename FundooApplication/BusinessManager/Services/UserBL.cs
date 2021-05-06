@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using BusinessManager.Interfaces;
 using CommonLayer;
+using CommonLayer.Models;
 using RepositoryLayer.Interfaces;
-using RepositoryLayer.Models;
+
 
 namespace BusinessManager.Services
 {
@@ -16,32 +17,32 @@ namespace BusinessManager.Services
             this.userRL = userRL;
         }
 
-        public bool UserRegister(User user)
+        public bool UserRegister(UserModel user)
         {
             return this.userRL.UserRegister(user);
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<UserModel> GetAll()
         {
             return this.userRL.GetAll();
         }
 
-        public User Get(long id)
+        public UserModel Get(long id)
         {
             return this.userRL.Get(id);
         }
 
-        public bool Update(User user, User entity)
+        public bool Update(UserModel user, UserModel entity)
         {
             return this.userRL.Update(user, entity);
         }
 
-        public void Delete(User user)
+        public void Delete(UserModel user)
         {
             this.userRL.Delete(user);        
         }
 
-        public User Authenticate(string email, string password)
+        public UserModel Authenticate(string email, string password)
         {
             return userRL.Authenticate(email,password);
         }

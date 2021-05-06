@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using CommonLayer;
-using RepositoryLayer.Models;
+using CommonLayer.Models;
 
 namespace RepositoryLayer.Interfaces
 {
     public interface IUserRL
     {
-        bool UserRegister(User user);
-        public IEnumerable<User> GetAll();
-        public User Get(long id);
-        public bool Update(User user, User entity);
-        public void Delete(User user);
-        public User Authenticate(string email, string password);
+        bool UserRegister(UserModel user);
+        public IEnumerable<UserModel> GetAll();
+        public UserModel Get(long id);
+        public bool Update(UserModel user, UserModel entity);
+        public void Delete(UserModel user);
+        public UserModel Authenticate(string email, string password);
     }
 }

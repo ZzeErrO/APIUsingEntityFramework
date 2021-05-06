@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using BusinessManager.Interfaces;
 using BusinessManager.Services;
 using CommonLayer.Models;
-using FundooApp.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,7 +20,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RepositoryLayer.Interfaces;
-using RepositoryLayer.Models;
 using RepositoryLayer.Services;
 
 namespace FundooApp
@@ -42,12 +40,10 @@ namespace FundooApp
             services.AddTransient<IUserRL, UserRL>();
             services.AddTransient<INotesBL, NotesBL>();
             services.AddTransient<INotesRL, NotesRL>();
-            services.AddDbContext<UserContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:UserDB"]));
-            //services.AddDbContext<NoteContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:UserDB"]));
+            services.AddDbContext<UserContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:FundooAppDB"]));
             services.AddControllers();
-            //services.AddTokenAuthentication(Configuration);
-
-            // JWT Token Generation from Server Side.  
+            
+            // JWT Token Generation from Server Side.
             services.AddMvc();
 
             // Enable Swagger   

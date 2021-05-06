@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CommonLayer.Models;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 
-namespace RepositoryLayer.Models
+namespace CommonLayer.Models
 {
     public class UserContext : DbContext
     {
         public UserContext(DbContextOptions options) : base(options)
-        { 
-        
+        {
+
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserModel> Users { get; set; }
         public DbSet<Note> Notes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasData(new User
+            modelBuilder.Entity<UserModel>().HasData(new UserModel
             {
                 UserId = 1,
                 FirstName = "Uncle",
@@ -27,7 +25,7 @@ namespace RepositoryLayer.Models
                 Email = "uncle.bob@gmail.com",
                 Password = "abrakadabra"
 
-            }, new User
+            }, new UserModel
             {
                 UserId = 2,
                 FirstName = "Jan",
