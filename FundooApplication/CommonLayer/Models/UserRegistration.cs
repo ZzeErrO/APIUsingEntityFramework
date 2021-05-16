@@ -6,21 +6,17 @@ using System.Text;
 
 namespace CommonLayer.Models
 {
-    public class UserModel
+    public class UserRegistration
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         //public char Gender { get; set; }
         [Required]
+        [EmailAddress]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-        public ICollection<Note> Notes { get; set; }
-
     }
 }

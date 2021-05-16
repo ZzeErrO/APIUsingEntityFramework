@@ -21,59 +21,204 @@ namespace RepositoryLayer.Services
 
         public IEnumerable<Note> GetNote(long Id)
         {
-            return _noteContext.Notes.Where(e => e.UserId == Id && e.IsArchive == false && e.IsTrash == false);
+            try
+            {
+                return _noteContext.Notes.Where(e => e.UserId == Id && e.IsArchive == false && e.IsTrash == false);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-
+        public IEnumerable<Note> GetReminderNote(long Id)
+        {
+            try
+            {
+                return _noteContext.Notes.Where(e => e.UserId == Id && e.Reminder != null);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IEnumerable<Note> GetPinnedNote(long Id)
+        {
+            try
+            {
+                return _noteContext.Notes.Where(e => e.UserId == Id && e.IsPin == true);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IEnumerable<Note> GetArchiveNote(long Id)
+        {
+            try
+            {
+                return _noteContext.Notes.Where(e => e.UserId == Id && e.IsArchive == true && e.IsTrash == false);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IEnumerable<Note> GetTrashNote(long Id)
+        {
+            try
+            {
+                return _noteContext.Notes.Where(e => e.UserId == Id && e.IsTrash == true);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public Note Get(long id)
         {
-            return this._noteContext.Notes.FirstOrDefault(e => e.NoteId == id);
-        }
-        public bool PostNote(Note note)
-        {
-            Note _user = new Note()
+            try
             {
-                Title = note.Title,
-                Message = note.Message,
-                Reminder = note.Reminder,
-                Color = note.Color,
-                Image = note.Image,
-                Collaborator = note.Collaborator,
-                IsPin = note.IsPin,
-                IsArchive = note.IsArchive,
-                IsTrash = note.IsTrash,
-                UserId = note.UserId
-            };
-            _noteContext.Notes.Add(_user);
-            int result = _noteContext.SaveChanges();
-            if (result <= 0)
-            {
-                return false;
+                return this._noteContext.Notes.FirstOrDefault(e => e.NoteId == id);
             }
-            else
+            catch (Exception ex)
             {
-                return true;
+                throw ex;
             }
         }
-        public bool Update(Note note, Note entity)
+        public bool PostNote(Note note, long Id)
         {
-            note.Title = entity.Title;
-            note.Message = entity.Message;
-            note.Reminder = entity.Reminder;
-            note.Color = entity.Color;
-            note.Image = entity.Image;
-            note.Collaborator = entity.Collaborator;
-            note.IsPin = entity.IsPin;
-            note.IsArchive = entity.IsArchive;
-            note.IsTrash = entity.IsTrash;
-            note.UserId = entity.UserId;
-            int result = _noteContext.SaveChanges();
-            if (result <= 0)
+            try
             {
-                return false;
+
+                Note _user = new Note()
+                {
+                    Title = note.Title,
+                    Message = note.Message,
+                    Reminder = note.Reminder,
+                    Color = note.Color,
+                    Image = note.Image,
+                    Collaborator = note.Collaborator,
+                    IsPin = note.IsPin,
+                    IsArchive = note.IsArchive,
+                    IsTrash = note.IsTrash,
+                    UserId = Id
+                };
+                _noteContext.Notes.Add(_user);
+                int result = _noteContext.SaveChanges();
+                if (result <= 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return true;
+                throw ex;
+            }
+        }
+        public bool Update(Note note, NoteModel entity)
+        {
+            try
+            {
+                note.Title = entity.Title;
+                note.Message = entity.Message;
+                note.Reminder = entity.Reminder;
+                note.Color = entity.Color;
+                note.Image = entity.Image;
+                note.Collaborator = entity.Collaborator;
+                note.IsPin = entity.IsPin;
+                note.IsArchive = entity.IsArchive;
+                note.IsTrash = entity.IsTrash;
+
+                int result = _noteContext.SaveChanges();
+                if (result <= 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Image(Note note, string image)
+        {
+            try
+            {
+                if (note.Image == null)
+                {
+                    note.Image = image;
+                    int result = _noteContext.SaveChanges();
+                    if (result <= 0)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                note.Image = note.Image + "," + image;
+                int result1 = _noteContext.SaveChanges();
+                if (result1 <= 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Reminder(Note note, DateTime reminder)
+        {
+            try
+            {
+                note.Reminder = reminder;
+                int result = _noteContext.SaveChanges();
+                if (result <= 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool ToPin(Note note)
+        {
+            try
+            {
+                note.IsPin = true;
+                int result = _noteContext.SaveChanges();
+                if (result <= 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
         public bool MoveToArchive(Note note)
@@ -89,16 +234,37 @@ namespace RepositoryLayer.Services
                 return true;
             }
         }
-        public IEnumerable<Note> DeleteToTrash(Note note)
+        public bool DeleteToTrash(Note note)
         {
-            note.IsTrash = true;
-            return _noteContext.Notes.ToList();
+            try
+            {
+                note.IsTrash = true;
+                int result = _noteContext.SaveChanges();
+                if (result <= 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-
         public void DeleteFromTrash(Note note)
         {
-            _noteContext.Notes.Remove(note);
-            _noteContext.SaveChanges();
+            try
+            {
+                _noteContext.Notes.Remove(note);
+                _noteContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

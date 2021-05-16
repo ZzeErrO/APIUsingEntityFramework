@@ -6,7 +6,6 @@ using CommonLayer;
 using CommonLayer.Models;
 using RepositoryLayer.Interfaces;
 
-
 namespace BusinessManager.Services
 {
     public class UserBL : IUserBL
@@ -17,9 +16,16 @@ namespace BusinessManager.Services
             this.userRL = userRL;
         }
 
-        public bool UserRegister(UserModel user)
+        public bool UserRegister(UserRegistration user)
         {
-            return this.userRL.UserRegister(user);
+            try
+            {
+                return this.userRL.UserRegister(user);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public IEnumerable<UserModel> GetAll()
@@ -34,9 +40,16 @@ namespace BusinessManager.Services
 
         public bool Update(UserModel user, UserModel entity)
         {
-            return this.userRL.Update(user, entity);
-        }
+            try
+            {
+                return this.userRL.Update(user, entity);
 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public void Delete(UserModel user)
         {
             this.userRL.Delete(user);        
@@ -44,7 +57,40 @@ namespace BusinessManager.Services
 
         public UserModel Authenticate(string email, string password)
         {
-            return userRL.Authenticate(email,password);
+            try
+            {
+                return userRL.Authenticate(email, password);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool ForgetPassword(string emailAddress)
+        {
+            try
+            {
+                bool result = this.userRL.ForgetPassword(emailAddress);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public bool ResetPassword(string email, string resetPassword)
+        {
+            try
+            {
+                return this.userRL.ResetPassword(email, resetPassword);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
     }
 }

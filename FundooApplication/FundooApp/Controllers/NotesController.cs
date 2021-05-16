@@ -20,143 +20,275 @@ namespace FundooApp.Controllers
         {
             _notesBL = dataRepository;
         }
-        [HttpGet("UserId")]
-        public string GetTokenType()
+        private string GetTokenType()
         {
             return User.FindFirst("Id").Value;
         }
 
-        [HttpGet("GetAllNotesFromDatabase")]
-        public IActionResult GetAll()
+        //[HttpGet("Database")]
+        private IActionResult GetAll()
         {
             IEnumerable<Note> note = _notesBL.GetAll();
             return Ok(note);
         }
 
-        [HttpGet("GetUserNotes")]
+        [HttpGet]
         public IActionResult GetNote()
         {
-            IEnumerable<Note> note = _notesBL.GetNote(Convert.ToInt64(GetTokenType()));
+            var getId = Convert.ToInt64(GetTokenType());
+            IEnumerable<Note> note = _notesBL.GetNote(getId);
             return Ok(note);
         }
 
-        // GET: api/Employee/5
-        [HttpGet("RecordFromNoteId")]
-        public IActionResult Get(long id)
+        [HttpGet("Reminder")]
+        public IActionResult GetReminderNote()
         {
-            Note note = _notesBL.Get(id);
-
-            if (note == null)
-            {
-                return NotFound("The Employee record couldn't be found.");
-            }
-
+            IEnumerable<Note> note = _notesBL.GetReminderNote(Convert.ToInt64(GetTokenType()));
             return Ok(note);
         }
 
-        [HttpPost("AddNewNote")]
-        public IActionResult PostNote([FromBody] Note note)
+        [HttpGet("Pin")]
+        public IActionResult GetPinnedNote()
         {
-            if (note == null)
-            {
-                return BadRequest("Note is null.");
-            }
+            IEnumerable<Note> note = _notesBL.GetPinnedNote(Convert.ToInt64(GetTokenType()));
+            return Ok(note);
+        }
 
-            bool result = _notesBL.PostNote(note);
-            if (result == true)
+        [HttpGet("Archive")]
+        public IActionResult GetArchiveNote()
+        {
+            IEnumerable<Note> note = _notesBL.GetArchiveNote(Convert.ToInt64(GetTokenType()));
+            return Ok(note);
+        }
+
+        [HttpGet("Trash")]
+        public IActionResult GetTrashNote()
+        {
+            IEnumerable<Note> note = _notesBL.GetTrashNote(Convert.ToInt64(GetTokenType()));
+            return Ok(note);
+        }
+
+        [HttpPost]
+        public IActionResult AddNewNote([FromBody] Note note)
+        {
+            try
             {
-                return this.Ok(new { success = true, message = "Note created successfully" });
+                if (note == null)
+                {
+                    return BadRequest("Note is null.");
+                }
+
+                bool result = _notesBL.PostNote(note, Convert.ToInt64(GetTokenType()));
+                if (result == true)
+                {
+                    return this.Ok(new { success = true, message = "Note created successfully" });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Note Creation failed" });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return this.BadRequest(new { success = false, message = "Note Creation failed" });
+                return this.Ok(new { success = false, message = ex.Message });
             }
 
         }
 
         // PUT: api/Note/5
-        [HttpPut("UpdateNote")]
-        public IActionResult Put(long id, [FromBody] Note note)
+        [HttpPut("{id}")]
+        public IActionResult UpdateNote(long id, [FromBody] NoteModel note)
         {
-            if (note == null)
+            try
             {
-                return BadRequest("Note is null.");
-            }
+                if (note == null)
+                {
+                    return BadRequest("Note is null.");
+                }
 
-            Note userToUpdate = _notesBL.Get(id);
-            if (userToUpdate == null)
-            {
-                return NotFound("The User record couldn't be found.");
-            }
+                Note userToUpdate = _notesBL.Get(id);
+                if (userToUpdate == null)
+                {
+                    return NotFound("The User record couldn't be found.");
+                }
 
-            bool result = _notesBL.Update(userToUpdate, note);
-            if (result == true)
-            {
-                return this.Ok(new { success = true, message = "Successfully edited" });
+                bool result = _notesBL.Update(userToUpdate, note);
+                if (result == true)
+                {
+                    return this.Ok(new { success = true, message = "Successfully edited" });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Editing Failed" });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return this.BadRequest(new { success = false, message = "Editing Failed" });
+                return this.Ok(new { success = false, message = ex.Message });
             }
 
         }
 
-        [HttpPut("MoveToArchive")]
+        [HttpPut("{id}/Image")]
+        public IActionResult Image(long id, string image)
+        {
+            try
+            {
+                Note userToUpdate = _notesBL.Get(id);
+                if (userToUpdate == null)
+                {
+                    return NotFound("The User record couldn't be found.");
+                }
+
+                bool result = _notesBL.Image(userToUpdate, image);
+                if (result == true)
+                {
+                    return this.Ok(new { success = true, message = "Successfully Added Image" });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Image Adding Failed" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.Ok(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPut("{id}/Reminder")]
+        public IActionResult Reminder(long id, DateTime reminder)
+        {
+            try
+            {
+                Note userToUpdate = _notesBL.Get(id);
+                if (userToUpdate == null)
+                {
+                    return NotFound("The User record couldn't be found.");
+                }
+
+                bool result = _notesBL.Reminder(userToUpdate, reminder);
+                if (result == true)
+                {
+                    return this.Ok(new { success = true, message = "Successfully changed Reminder" });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Failed Changing Reminder" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.Ok(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPut("{id}/Pin")]
+        public IActionResult ToPin(long id)
+        {
+            try
+            {
+                Note userToUpdate = _notesBL.Get(id);
+                if (userToUpdate == null)
+                {
+                    return NotFound("The User record couldn't be found.");
+                }
+
+                bool result = _notesBL.ToPin(userToUpdate);
+                if (result == true)
+                {
+                    return this.Ok(new { success = true, message = "Successfully pined" });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Failed Pinning" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.Ok(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPut("{id}/Archive")]
         public IActionResult MoveToArchive(long id)
         {
-            Note userToUpdate = _notesBL.Get(id);
-            if (userToUpdate == null)
+            try
             {
-                return NotFound("The User record couldn't be found.");
-            }
+                Note userToUpdate = _notesBL.Get(id);
+                if (userToUpdate == null)
+                {
+                    return NotFound("The User record couldn't be found.");
+                }
 
-            bool result = _notesBL.MoveToArchive(userToUpdate);
-            if (result == true)
-            {
-                return this.Ok(new { success = true, message = "Successfully moved" });
+                bool result = _notesBL.MoveToArchive(userToUpdate);
+                if (result == true)
+                {
+                    return this.Ok(new { success = true, message = "Successfully moved" });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Moving Failed" });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return this.BadRequest(new { success = false, message = "Moving Failed" });
+                return this.Ok(new { success = false, message = ex.Message });
             }
 
         }
 
-
-        [HttpPut("DeleteToTrash")]
+        [HttpDelete("{id}/Trash")]
         public IActionResult DeleteToTrash(long id)
         {
-            Note note = _notesBL.Get(id);
-            if (note == null)
+            try
             {
-                return NotFound("The User record couldn't be found.");
-            }
-            if (note.IsTrash == true)
-            {
-                return BadRequest("Note is already in Trash");
-            }
+                Note userToUpdate = _notesBL.Get(id);
+                if (userToUpdate == null)
+                {
+                    return NotFound("The User record couldn't be found.");
+                }
 
-            IEnumerable<Note> result = _notesBL.DeleteToTrash(note);
-            return Ok(result);
+                bool result = _notesBL.DeleteToTrash(userToUpdate);
+                if (result == true)
+                {
+                    return this.Ok(new { success = true, message = "Successfully moved" });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Moving Failed" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.Ok(new { success = false, message = ex.Message });
+            }
         }
 
         // DELETE: api/Employee/5
-        [HttpDelete("DeleteFromTrash")]
+        [HttpDelete("{id}")]
         public IActionResult DeleteFromTrash(long id)
         {
-            Note note = _notesBL.Get(id);
-            if (note == null)
+            try
             {
-                return NotFound("The User record couldn't be found.");
+                Note note = _notesBL.Get(id);
+                if (note == null)
+                {
+                    return NotFound("The User record couldn't be found.");
+                }
+                if (note.IsTrash == true)
+                {
+                    _notesBL.DeleteFromTrash(note);
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest("Note is not in trash");
+                }
             }
-            if (note.IsTrash == true)
+            catch (Exception ex)
             {
-                _notesBL.DeleteFromTrash(note);
-                return NoContent();
-            }
-            else 
-            {
-                return BadRequest("Note is not in trash");
+                return this.Ok(new { success = false, message = ex.Message });
             }
         }
         

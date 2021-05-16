@@ -19,32 +19,158 @@ namespace BusinessManager.Services
             return this.noteRL.GetAll();
         }
         public IEnumerable<Note> GetNote(long Id)
-        { 
-            return this.noteRL.GetNote(Id);
+        {
+            try
+            {
+                return this.noteRL.GetNote(Id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IEnumerable<Note> GetReminderNote(long Id)
+        {
+            try 
+            {
+            return this.noteRL.GetReminderNote(Id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IEnumerable<Note> GetPinnedNote(long Id)
+        {
+            try 
+            {
+                return this.noteRL.GetPinnedNote(Id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IEnumerable<Note> GetArchiveNote(long Id)
+        {
+            try
+            {
+                return this.noteRL.GetArchiveNote(Id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IEnumerable<Note> GetTrashNote(long Id)
+        {
+            try
+            {
+                return this.noteRL.GetTrashNote(Id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         public Note Get(long id)
         {
-            return this.noteRL.Get(id);
+            try
+            {
+                return this.noteRL.Get(id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-        public bool PostNote(Note note)
+        public bool PostNote(Note note, long Id)
         {
-            return this.noteRL.PostNote(note);
+            try
+            {
+                return this.noteRL.PostNote(note, Id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-        public bool Update(Note note, Note entity)
+        public bool Update(Note note, NoteModel entity)
         {
-            return this.noteRL.Update(note, entity);
+            try
+            {
+                return this.noteRL.Update(note, entity);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Image(Note note, string image)
+        {
+            try
+            {
+                return this.noteRL.Image(note, image);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Reminder(Note note, DateTime reminder)
+        {
+            try
+            {
+                return this.noteRL.Reminder(note, reminder);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool ToPin(Note note)
+        {
+            try
+            {
+                return this.noteRL.ToPin(note);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         public bool MoveToArchive(Note note)
         {
-            return this.noteRL.MoveToArchive(note);
+            try
+            {
+                return this.noteRL.MoveToArchive(note);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-        public IEnumerable<Note> DeleteToTrash(Note note)
+        public bool DeleteToTrash(Note note)
         {
-            return this.noteRL.DeleteToTrash(note);
+            try
+            {
+                return this.noteRL.DeleteToTrash(note);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         public void DeleteFromTrash(Note note)
         {
-            this.noteRL.DeleteFromTrash(note);
+            try
+            {
+                this.noteRL.DeleteFromTrash(note);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
