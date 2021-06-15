@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BusinessManager.Interfaces;
 using CommonLayer.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FundooApp.Controllers
@@ -13,6 +14,7 @@ namespace FundooApp.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+    [EnableCors("AllowOrigin")]
     public class NotesController : Controller
     {
         private readonly INotesBL _notesBL;
@@ -156,6 +158,33 @@ namespace FundooApp.Controllers
             }
         }
 
+        [HttpPut("{id}/{color}")]
+        public IActionResult Color(long id, string color)
+        {
+            try
+            {
+                Note userToUpdate = _notesBL.Get(id);
+                if (userToUpdate == null)
+                {
+                    return NotFound("The User record couldn't be found.");
+                }
+
+                bool result = _notesBL.Color(userToUpdate, color);
+                if (result == true)
+                {
+                    return this.Ok(new { success = true, message = "Successfully Added Color" });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Color Adding Failed" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.Ok(new { success = false, message = ex.Message });
+            }
+        }
+
         [HttpPut("{id}/Reminder")]
         public IActionResult Reminder(long id, DateTime reminder)
         {
@@ -238,6 +267,34 @@ namespace FundooApp.Controllers
 
         }
 
+        [HttpPut("{id}/UnArchiveOrUnTrash")]
+        public IActionResult UnArchiveOrUnTrash(long id)
+        {
+            try
+            {
+                Note userToUpdate = _notesBL.Get(id);
+                if (userToUpdate == null)
+                {
+                    return NotFound("The User record couldn't be found.");
+                }
+
+                bool result = _notesBL.UnArchiveOrUnTrash(userToUpdate);
+                if (result == true)
+                {
+                    return this.Ok(new { success = true, message = "Successfully moved" });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Moving Failed" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.Ok(new { success = false, message = ex.Message });
+            }
+
+        }
+
         [HttpDelete("{id}/Trash")]
         public IActionResult DeleteToTrash(long id)
         {
@@ -279,7 +336,7 @@ namespace FundooApp.Controllers
                 if (note.IsTrash == true)
                 {
                     _notesBL.DeleteFromTrash(note);
-                    return NoContent();
+                    return this.Ok(new { success = true, message = "Note deleted successfully" });
                 }
                 else
                 {
@@ -288,7 +345,7 @@ namespace FundooApp.Controllers
             }
             catch (Exception ex)
             {
-                return this.Ok(new { success = false, message = ex.Message });
+                return this.BadRequest(new { success = false, message = ex.Message });
             }
         }
         

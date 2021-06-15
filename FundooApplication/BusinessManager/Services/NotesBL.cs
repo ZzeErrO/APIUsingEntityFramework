@@ -117,6 +117,17 @@ namespace BusinessManager.Services
                 throw ex;
             }
         }
+        public bool Color(Note note, string color)
+        {
+            try
+            {
+                return this.noteRL.Color(note, color);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public bool Reminder(Note note, DateTime reminder)
         {
             try
@@ -144,6 +155,17 @@ namespace BusinessManager.Services
             try
             {
                 return this.noteRL.MoveToArchive(note);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool UnArchiveOrUnTrash(Note note)
+        {
+            try
+            {
+                return this.noteRL.UnArchiveOrUnTrash(note);
             }
             catch (Exception ex)
             {

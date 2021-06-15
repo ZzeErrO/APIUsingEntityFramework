@@ -42,7 +42,18 @@ namespace FundooApp
             services.AddTransient<INotesRL, NotesRL>();
             services.AddDbContext<UserContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:FundooAppDB"]));
             services.AddControllers();
-            
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AllowOrigin",
+                    builder =>
+                    {
+                        builder.WithOrigins("https://localhost:44362", "http://localhost:3000")
+                                            .AllowAnyHeader()
+                                            .AllowAnyMethod();
+                    });
+            });
+
             // JWT Token Generation from Server Side.
             services.AddMvc();
 
@@ -136,6 +147,10 @@ namespace FundooApp
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // with a named pociliy 
+            app.UseCors("AllowOrigin");
+
             //Added new line
             app.UseAuthentication();
 

@@ -34,7 +34,7 @@ namespace RepositoryLayer.Services
         {
             try
             {
-                return _noteContext.Notes.Where(e => e.UserId == Id && e.Reminder != null);
+                return _noteContext.Notes.Where(e => e.UserId == Id && e.Reminder != null && e.IsTrash == false);
             }
             catch (Exception ex)
             {
@@ -45,7 +45,7 @@ namespace RepositoryLayer.Services
         {
             try
             {
-                return _noteContext.Notes.Where(e => e.UserId == Id && e.IsPin == true);
+                return _noteContext.Notes.Where(e => e.UserId == Id && e.IsPin == true && e.IsTrash == false);
             }
             catch (Exception ex)
             {
@@ -181,6 +181,26 @@ namespace RepositoryLayer.Services
                 throw ex;
             }
         }
+        public bool Color(Note note, string color)
+        {
+            try
+            {
+                    note.Color = color;
+                    int result = _noteContext.SaveChanges();
+                    if (result <= 0)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public bool Reminder(Note note, DateTime reminder)
         {
             try
@@ -233,6 +253,29 @@ namespace RepositoryLayer.Services
             {
                 return true;
             }
+        }
+        public bool UnArchiveOrUnTrash(Note note)
+        {
+            int result;
+            if (note.IsTrash == true)
+            {
+                note.IsTrash = false;
+                result = _noteContext.SaveChanges();
+                if (result > 0)
+                {
+                    return true;
+                }
+            }
+            else if (note.IsArchive == true)
+            {
+                note.IsArchive = false;
+                result = _noteContext.SaveChanges();
+                if (result > 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         public bool DeleteToTrash(Note note)
         {

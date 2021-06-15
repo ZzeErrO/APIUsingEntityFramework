@@ -15,12 +15,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Experimental.System.Messaging;
+using Microsoft.AspNetCore.Cors;
 
 namespace FundooApp.Controllers
 {
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+    [EnableCors("AllowOrigin")]
     public class UserController : ControllerBase
     {
         private readonly IUserBL _userBL;
@@ -49,7 +51,7 @@ namespace FundooApp.Controllers
         }
 
         // POST: api/User
-        [HttpPost]
+        [HttpPost("Register")]
         [AllowAnonymous]
         public IActionResult UserRegister([FromBody] UserRegistration user)
         {
